@@ -1,45 +1,40 @@
 package application
 
 import (
+	"cash-flow/src/domain/dailySummary"
 	"encoding/json"
+	"log"
 	"net/http"
-	"sync"
 	"time"
-	"cashflow/internal/models"
 )
 
-var (
-	transactions []models.Transaction
-	mu           sync.Mutex
-)
+type HandlerSummary struct {
+	DailySummaryUseCase dailySummary.IDailySummaryUseCase
+}
 
 // GetDailySummary retorna o consolidado diário
-func GetDailySummary(w http.ResponseWriter, r *http.Request) {
-	mu.Lock()
-	defer mu.Unlock()
-
-	summaryMap := make(map[string]*models.DailySummary)
-
-	for _, t := range transactions {
-		date := t.Timestamp.Format("2006-01-02")
-		if summaryMap[date] == nil {
-			summaryMap[date] = &models.DailySummary{
-				Date: t.Timestamp,
-			}
-		}
-		if t.Type == "credit" {
-			summaryMap[date].Credit += t.Amount
-		} else {
-			summaryMap[date].Debit += t.Amount
-		}
-		summaryMap[date].Total = summaryMap[date].Credit - summaryMap[date].Debit
-	}
-
-	var summaries []models.DailySummary
-	for _, summary := range summaryMap {
-		summaries = append(summaries, *summary)
-	}
+func (h *HandlerSummary) GetDailySummary(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(summaries)
+
+	dateParam := r.URL.Query().Get("date")
+	if dateParam == "" {
+		http.Error(w, "Missing 'date' query parameter", http.StatusBadRequest)
+		return
+	}
+
+	date, err := time.Parse("2006-01-02", dateParam)
+	if err != nil {
+		http.Error(w, "Invalid date format. Use YYYY-MM-DD", http.StatusBadRequest)
+		return
+	}
+
+	report, err := h.DailySummaryUseCase.GenerateReport(date)
+	if err != nil {
+		log.Fatalln("Error to get report: ", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(report)
 }

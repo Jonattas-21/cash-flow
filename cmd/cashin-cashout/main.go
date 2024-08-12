@@ -23,10 +23,10 @@ func main() {
 	db := database.NewDB()
 
 	transactionUserCase := transaction.TransactionUseCase{
-		IRepository: &database.Repository{Db: db},
+		Repository: &transaction.TransactionRepository{Db: db},
 	}
 
-	handler := application.Handler{
+	handler := application.HandlerTransaction{
 		TransactionUseCase: &transactionUserCase,
 	}
 

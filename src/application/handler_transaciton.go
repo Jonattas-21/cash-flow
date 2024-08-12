@@ -9,7 +9,11 @@ import (
 	"time"
 )
 
-func (h *Handler) CreateTransaction(w http.ResponseWriter, r *http.Request) {
+type HandlerTransaction struct {
+	TransactionUseCase transaction.ITransactionUseCase
+}
+
+func (h *HandlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Request) {
 	var transaction transaction.Transaction
 
 	if err := json.NewDecoder(r.Body).Decode(&transaction); err != nil {
@@ -38,11 +42,27 @@ func (h *Handler) CreateTransaction(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-// GetTransactions retorna todas as transações
-func (h *Handler) GetTransactions(w http.ResponseWriter, r *http.Request) {
-	mu.Lock()
-	defer mu.Unlock()
-
+func (h *HandlerTransaction) GetTransactions(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+
+	dateParam := r.URL.Query().Get("date")
+	if dateParam == "" {
+		http.Error(w, "Missing 'date' query parameter", http.StatusBadRequest)
+		return
+	}
+
+	date, err := time.Parse("2006-01-02", dateParam)
+	if err != nil {
+		http.Error(w, "Invalid date format. Use YYYY-MM-DD", http.StatusBadRequest)
+		return
+	}
+
+	transactions, err := h.TransactionUseCase.FindTransactions(date)
+	if err != nil {
+		log.Fatalln("Error to get transactions: ", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	json.NewEncoder(w).Encode(transactions)
 }

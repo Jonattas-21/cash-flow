@@ -1,6 +1,7 @@
 package database
 
 import (
+	"cash-flow/src/domain/transaction"
 	"os"
 
 	"gorm.io/driver/postgres"
@@ -16,7 +17,7 @@ func NewDB() *gorm.DB {
 		panic("failed to connect database")
 	}
 
-	//db.AutoMigrate(&campaign.Campaign{}, &campaign.Contact{})
+	db.AutoMigrate(&transaction.Transaction{})
 
 	return db
 }

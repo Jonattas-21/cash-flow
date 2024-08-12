@@ -1,18 +1,17 @@
 package transaction
 
 import (
-	"cash-flow/src/infrastructure/database"
 	"log"
 	"time"
 )
 
-type IUseCaseTransaction interface {
+type ITransactionUseCase interface {
 	SaveTransaction(transaction Transaction) (Transaction, []string, error)
 	FindTransactions(date time.Time) ([]Transaction, error)
 }
 
 type TransactionUseCase struct {
-	IRepository database.IRepository
+	Repository ITransactionRepository
 }
 
 func (t *TransactionUseCase) SaveTransaction(transaction Transaction) (Transaction, []string, error) {
@@ -31,7 +30,7 @@ func (t *TransactionUseCase) SaveTransaction(transaction Transaction) (Transacti
 	}
 
 	//save database
-	err := t.IRepository.Save(transaction)
+	err := t.Repository.Save(transaction)
 	if err != nil {
 		log.Fatalln("Error to save transaction on services: ", err)
 		return transaction, nil, err
@@ -41,19 +40,10 @@ func (t *TransactionUseCase) SaveTransaction(transaction Transaction) (Transacti
 }
 
 func (t *TransactionUseCase) FindTransactions(date time.Time) ([]Transaction, error) {
-	transactions, err := t.IRepository.FindByDay(date)
+	transactions, err := t.Repository.FindByDay(date)
 	if err != nil {
 		return nil, err
 	}
 
-	var result []Transaction
-	for _, item := range transactions {
-		if v, ok := item.(Transaction); ok {
-			result = append(result, v)
-		} else {
-			log.Printf("Error to convert transaction to Transaction %v", item)
-		}
-	}
-
-	return result, nil
+	return transactions, nil
 }
