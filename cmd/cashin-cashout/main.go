@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"cash-flow/src/application"
 	"cash-flow/src/domain/transaction"
@@ -15,6 +16,8 @@ import (
 
 func main() {
 	err := godotenv.Load("cash-flow/cmd/cashin-cashout/.env")
+	useAuth := os.Getenv("USE_KEYCLOAK")
+
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -35,7 +38,9 @@ func main() {
 
 	r.Get("/", application.HealthCheck)
 	r.Route("/transactions", func(r chi.Router) {
-		r.Use(application.Auth)
+		if useAuth == "true" {
+			r.Use(application.Auth)
+		}
 		r.Post("/create", handler.CreateTransaction)
 		r.Get("/", handler.GetTransactions)
 	})

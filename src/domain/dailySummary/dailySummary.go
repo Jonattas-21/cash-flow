@@ -4,8 +4,8 @@ import "time"
 
 type DailySummary struct {
 	Date   time.Time `json:"date"`
-	Credit float64   `json:"credit"`
-	Debit  float64   `json:"debit"`
-	Total  float64   `json:"total"`
+	Credit int       `json:"credit"`
+	Debit  int       `json:"debit"`
+	Total  int       `json:"total"`
 	Status string    `json:"status"`
 }

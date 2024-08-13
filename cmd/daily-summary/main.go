@@ -15,16 +15,19 @@ import (
 
 func main() {
 	err := godotenv.Load("cash-flow/cmd/daily-summary/.env")
+	useAuth := os.Getenv("USE_KEYCLOAK")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
 	r := chi.NewRouter()
 	db := database.NewDB()
+	rdb := database.NewCache()
 
 	dailySummaryUserCase := dailySummary.DailySummaryUseCase{
 		Repository:       &dailySummary.DailySummaryRepository{Db: db},
 		CashinCashoutUrl: os.Getenv("CASHINCASHOUT"),
+		Rdb:              rdb,
 	}
 
 	handler := application.HandlerSummary{
@@ -36,7 +39,9 @@ func main() {
 
 	r.Get("/", application.HealthCheck)
 	r.Route("/transactions", func(r chi.Router) {
-		r.Use(application.Auth)
+		if useAuth == "true" {
+			r.Use(application.Auth)
+		}
 		r.Get("/generateDailyReport", handler.GetDailySummary)
 	})
 

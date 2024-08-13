@@ -28,7 +28,7 @@ func (h *HandlerSummary) GetDailySummary(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	report, err := h.DailySummaryUseCase.GenerateReport(date)
+	report, err := h.DailySummaryUseCase.GetDailySummary(date)
 	if err != nil {
 		log.Fatalln("Error to get report: ", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
