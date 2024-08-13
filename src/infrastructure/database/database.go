@@ -1,6 +1,7 @@
 package database
 
 import (
+	"cash-flow/src/domain/dailySummary"
 	"cash-flow/src/domain/transaction"
 	"os"
 
@@ -18,6 +19,7 @@ func NewDB() *gorm.DB {
 	}
 
 	db.AutoMigrate(&transaction.Transaction{})
+	db.AutoMigrate(&dailySummary.DailySummary{})
 
 	return db
 }

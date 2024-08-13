@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: postgres
+    container_name: cf-postgres
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
@@ -15,7 +15,7 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:21.0.1
-    container_name: keycloak
+    container_name: cf-keycloak
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -37,11 +37,6 @@ services:
       dockerfile: ./cmd/cashin-cashout/Dockerfile
     container_name: cashin-cashout
     environment:
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: cashflow
       REDIS_HOST: redis
       REDIS_PORT: 6379
     depends_on:
@@ -56,11 +51,6 @@ services:
       dockerfile: ./cmd/daily-summary/Dockerfile
     container_name: daily-summary
     environment:
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: cashflow
       REDIS_HOST: redis
       REDIS_PORT: 6379
     depends_on:

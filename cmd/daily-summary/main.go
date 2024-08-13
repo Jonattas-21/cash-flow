@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
+	err := godotenv.Load("cash-flow/cmd/daily-summary/.env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
