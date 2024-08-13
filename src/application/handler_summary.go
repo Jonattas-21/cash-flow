@@ -12,7 +12,6 @@ type HandlerSummary struct {
 	DailySummaryUseCase dailySummary.IDailySummaryUseCase
 }
 
-// GetDailySummary retorna o consolidado diário
 func (h *HandlerSummary) GetDailySummary(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
