@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"errors"
 	"time"
 
 	"gorm.io/gorm"
@@ -21,6 +22,14 @@ func (r *TransactionRepository) Save(item Transaction) error {
 
 func (r *TransactionRepository) FindByDay(date time.Time) ([]Transaction, error) {
 	var itens []Transaction
-	//err := r.Db.Find(&itens).Error
+
+	dateFormmatedmin := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.Local)
+	dateFormmatedMax := time.Date(date.Year(), date.Month(), date.Day(), 23, 59, 59, 0, time.Local)
+
+	tx := r.Db.Where("date BETWEEN ? and ?", dateFormmatedmin, dateFormmatedMax).Find(&itens)
+	if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
 	return itens, nil
 }

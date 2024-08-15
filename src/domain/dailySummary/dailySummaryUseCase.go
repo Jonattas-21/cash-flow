@@ -91,7 +91,7 @@ func (d *DailySummaryUseCase) getGeneratedReport(date time.Time) (*DailySummary,
 	if dateMinor {
 		result, err := d.Repository.GetReport(date)
 		if err != nil {
-			log.Fatal("Error to get report for date ", err, date)
+			log.Println("Error to get report for date ", err, date)
 			return nil, err
 		}
 
@@ -100,13 +100,13 @@ func (d *DailySummaryUseCase) getGeneratedReport(date time.Time) (*DailySummary,
 
 			result, err := d.getGeneratedReport(date)
 			if err != nil {
-				log.Fatal("Error to generate report for date ", err, date)
+				log.Println("Error to generate report for date ", err, date)
 				return nil, err
 			}
 			result.Status = "closed"
 			err = d.Repository.SaveReport(*result)
 			if err != nil {
-				log.Fatal("Error to save report for date ", err, date)
+				log.Println("Error to save report for date ", err, date)
 				return nil, err
 			}
 		}
@@ -114,7 +114,7 @@ func (d *DailySummaryUseCase) getGeneratedReport(date time.Time) (*DailySummary,
 	} else {
 		result, err := d.getGeneratedReport(date)
 		if err != nil {
-			log.Fatal("Error to generate partial report for date ", err, date)
+			log.Println("Error to generate partial report for date ", err, date)
 			return nil, err
 		}
 

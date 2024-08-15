@@ -7,5 +7,5 @@ type DailySummary struct {
 	Credit int       `json:"credit"`
 	Debit  int       `json:"debit"`
 	Total  int       `json:"total"`
-	Status string    `json:"status"`
+	Status string    `json:"status" gorm:"size:50"`
 }

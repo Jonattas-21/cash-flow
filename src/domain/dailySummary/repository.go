@@ -21,8 +21,8 @@ func (d *DailySummaryRepository) SaveReport(item DailySummary) error {
 }
 
 func (d *DailySummaryRepository) GetReport(date time.Time) (*DailySummary, error) {
-
 	var summary DailySummary
+	date = date.Truncate(24 * time.Hour)
 	tx := d.Db.Where("date = ?", date).First(&summary)
 
 	if errors.Is(tx.Error, gorm.ErrRecordNotFound) {

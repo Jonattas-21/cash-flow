@@ -17,16 +17,17 @@ func (h *HandlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 	var transaction transaction.Transaction
 
 	if err := json.NewDecoder(r.Body).Decode(&transaction); err != nil {
-		log.Fatalln("Error to decode transaction: ", err)
+		log.Println("Error to decode transaction: ", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	transaction.CreatedBy = r.Context().Value("email").(string)
+	if r.Context().Value("email") != nil {
+		transaction.CreatedBy = r.Context().Value("email").(string)
+	}
 
 	result, validations, err := h.TransactionUseCase.SaveTransaction(transaction)
 	if err != nil {
-		log.Fatalln("Error to save transaction: ", err)
+		log.Println("Error to save transaction: ", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -59,7 +60,7 @@ func (h *HandlerTransaction) GetTransactions(w http.ResponseWriter, r *http.Requ
 
 	transactions, err := h.TransactionUseCase.FindTransactions(date)
 	if err != nil {
-		log.Fatalln("Error to get transactions: ", err)
+		log.Println("Error to get transactions: ", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

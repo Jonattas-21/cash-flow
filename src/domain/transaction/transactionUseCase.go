@@ -3,6 +3,8 @@ package transaction
 import (
 	"log"
 	"time"
+
+	"github.com/rs/xid"
 )
 
 type ITransactionUseCase interface {
@@ -15,7 +17,6 @@ type TransactionUseCase struct {
 }
 
 func (t *TransactionUseCase) SaveTransaction(transaction Transaction) (Transaction, []string, error) {
-	transaction.CreatedAt = time.Now()
 	errorsValidation := []string{}
 
 	//validations
@@ -29,10 +30,13 @@ func (t *TransactionUseCase) SaveTransaction(transaction Transaction) (Transacti
 		errorsValidation = append(errorsValidation, "Transaction type is required and must be credit or debit")
 	}
 
+	transaction.CreatedAt = time.Now().Truncate(24 * time.Hour)
+	transaction.ID = xid.New().String()
+
 	//save database
 	err := t.Repository.Save(transaction)
 	if err != nil {
-		log.Fatalln("Error to save transaction on services: ", err)
+		log.Println("Error to save transaction on services: ", err)
 		return transaction, nil, err
 	}
 

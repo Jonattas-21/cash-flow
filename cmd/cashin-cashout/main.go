@@ -15,13 +15,13 @@ import (
 )
 
 func main() {
-	err := godotenv.Load("cash-flow/cmd/cashin-cashout/.env")
-	useAuth := os.Getenv("USE_KEYCLOAK")
-
+	//err := godotenv.Load("cmd/cashin-cashout/.env")
+	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("cashin-cashout: Error loading .env file")
 	}
 
+	useAuth := os.Getenv("USE_KEYCLOAK")
 	r := chi.NewRouter()
 	db := database.NewDB()
 
@@ -45,5 +45,5 @@ func main() {
 		r.Get("/", handler.GetTransactions)
 	})
 
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(":8088", r)
 }
