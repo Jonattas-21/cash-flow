@@ -1,8 +1,9 @@
-package application
+package handlers
 
 import (
-	"cash-flow/src/application/dto"
-	"cash-flow/src/domain/transaction"
+	"cash-flow/internal/api/dto"
+	"cash-flow/internal/domain/entities"
+	"cash-flow/internal/usecases"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -10,11 +11,11 @@ import (
 )
 
 type HandlerTransaction struct {
-	TransactionUseCase transaction.ITransactionUseCase
+	TransactionUseCase usecases.Transaction
 }
 
 func (h *HandlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Request) {
-	var transaction transaction.Transaction
+	var transaction entities.Transaction
 
 	if err := json.NewDecoder(r.Body).Decode(&transaction); err != nil {
 		log.Println("Error to decode transaction: ", err)

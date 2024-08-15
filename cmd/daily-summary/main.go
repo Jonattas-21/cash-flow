@@ -1,9 +1,13 @@
 package main
 
 import (
-	"cash-flow/src/application"
-	"cash-flow/src/domain/dailySummary"
-	"cash-flow/src/infrastructure/database"
+	"cash-flow/internal/api"
+	"cash-flow/internal/api/handlers"
+	"cash-flow/internal/domain/entities"
+	"cash-flow/internal/infrastructure/database"
+	"cash-flow/internal/infrastructure/repositories"
+	"cash-flow/internal/usecases"
+
 	"log"
 	"net/http"
 	"os"
@@ -24,28 +28,27 @@ func main() {
 	db := database.NewDB()
 
 	// Migrate the schema
-	db.AutoMigrate(&dailySummary.DailySummary{})
-
+	db.AutoMigrate(&entities.DailySummary{})
 
 	rdb := database.NewCache()
 
-	dailySummaryUserCase := dailySummary.DailySummaryUseCase{
-		Repository:       &dailySummary.DailySummaryRepository{Db: db},
+	dailySummaryUserCase := usecases.DailySummaryUseCase{
+		Repository:       &repositories.DailySummaryRepository{Db: db},
 		CashinCashoutUrl: os.Getenv("CASHINCASHOUT"),
 		Rdb:              rdb,
 	}
 
-	handler := application.HandlerSummary{
+	handler := handlers.HandlerSummary{
 		DailySummaryUseCase: &dailySummaryUserCase,
 	}
 
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Get("/", application.HealthCheck)
+	r.Get("/", handlers.HealthCheck)
 	r.Route("/transactions", func(r chi.Router) {
 		if useAuth == "true" {
-			r.Use(application.Auth)
+			r.Use(api.Auth)
 		}
 		r.Get("/generateDailyReport", handler.GetDailySummary)
 	})

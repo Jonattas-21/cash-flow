@@ -1,7 +1,7 @@
-package application
+package handlers
 
 import (
-	"cash-flow/src/domain/dailySummary"
+	"cash-flow/internal/usecases"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -9,7 +9,7 @@ import (
 )
 
 type HandlerSummary struct {
-	DailySummaryUseCase dailySummary.IDailySummaryUseCase
+	DailySummaryUseCase usecases.DailySummary
 }
 
 func (h *HandlerSummary) GetDailySummary(w http.ResponseWriter, r *http.Request) {

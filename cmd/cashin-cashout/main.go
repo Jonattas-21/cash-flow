@@ -5,9 +5,12 @@ import (
 	"net/http"
 	"os"
 
-	"cash-flow/src/application"
+	"cash-flow/internal/api"
+	"cash-flow/internal/api/handlers"
 	"cash-flow/internal/domain/entities"
-	"cash-flow/src/infrastructure/database"
+	"cash-flow/internal/infrastructure/database"
+	"cash-flow/internal/infrastructure/repositories"
+	"cash-flow/internal/usecases"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -30,21 +33,21 @@ func main() {
 	db := database.NewDB()
 	db.AutoMigrate(&entities.Transaction{})
 
-	transactionUserCase := transaction.TransactionUseCase{
-		Repository: &transaction.TransactionRepository{Db: db},
+	transactionUserCase := usecases.TransactionUseCase{
+		Repository: &repositories.TransactionRepository{Db: db},
 	}
 
-	handler := application.HandlerTransaction{
+	handler := handlers.HandlerTransaction{
 		TransactionUseCase: &transactionUserCase,
 	}
 
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Get("/", application.HealthCheck)
+	r.Get("/", handlers.HealthCheck)
 	r.Route("/transactions", func(r chi.Router) {
 		if useAuth == "true" {
-			r.Use(application.Auth)
+			r.Use(api.Auth)
 		}
 		r.Post("/create", handler.CreateTransaction)
 		r.Get("/", handler.GetTransactions)
