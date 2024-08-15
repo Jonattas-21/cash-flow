@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"cash-flow/src/application"
-	"cash-flow/src/domain/transaction"
+	"cash-flow/internal/domain/entities"
 	"cash-flow/src/infrastructure/database"
 
 	"github.com/go-chi/chi"
@@ -22,8 +22,13 @@ func main() {
 	}
 
 	useAuth := os.Getenv("USE_KEYCLOAK")
+
+	//Create a new router
 	r := chi.NewRouter()
+
+	//Conect and migrate the schema
 	db := database.NewDB()
+	db.AutoMigrate(&entities.Transaction{})
 
 	transactionUserCase := transaction.TransactionUseCase{
 		Repository: &transaction.TransactionRepository{Db: db},

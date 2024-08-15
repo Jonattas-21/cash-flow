@@ -22,6 +22,11 @@ func main() {
 
 	r := chi.NewRouter()
 	db := database.NewDB()
+
+	// Migrate the schema
+	db.AutoMigrate(&dailySummary.DailySummary{})
+
+
 	rdb := database.NewCache()
 
 	dailySummaryUserCase := dailySummary.DailySummaryUseCase{
