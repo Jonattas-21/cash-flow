@@ -2,11 +2,20 @@
 
 The main goal of this project it's to provide a cash flow system manager, it's store debit and credit transactions and deliver a daily report, it can be a complete report or a partial report, it's depends if the day it's over or not.
 
+### Activity Diagram
+Bellow folow two use cases that illustrate what it's possible to operate in the system.
+
+![alt text](https://raw.githubusercontent.com/Jonattas-21/cash-flow/refs/heads/main/docs/activity_diagram.png?token=GHSAT0AAAAAACZG4K57EVZCLOXWR4MVPOUGZZJPYSQ "USe Case")
+
+### Container Diagram
 The system has been splitted in five distinguiguished services to manage each specific responsability.
+
+![alt text](https://raw.githubusercontent.com/Jonattas-21/cash-flow/refs/heads/main/docs/container_diagram.png?token=GHSAT0AAAAAACZG4K563PXN2T46OR6EEXJEZZJP2VA "Container Diagram")
+
 
 #### Transaction-service
 
-> This is a golang service responsible for Handling transactions and stores in DB
+> This is a golang service responsible for Handling transactions and stores in DB,
 
 #### Daily-summary-service
 
@@ -23,4 +32,5 @@ The system has been splitted in five distinguiguished services to manage each sp
 #### Cache
 
 > A Redis Cache service that provide fast report querying.
+
 
