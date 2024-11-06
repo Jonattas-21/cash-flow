@@ -10,7 +10,6 @@ import (
 	"internal/infrastructure/database"
 	"internal/infrastructure/repositories"
 	"internal/usecases"
-
 	"internal/api"
 
 	"github.com/go-chi/chi"
