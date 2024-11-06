@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"cash-flow/internal/api/dto"
-	"cash-flow/internal/domain/entities"
-	"cash-flow/internal/usecases"
+	"internal/api/dto"
+	"internal/domain/entities"
+	"internal/usecases"
 	"encoding/json"
 	"log"
 	"net/http"

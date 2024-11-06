@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"cash-flow/internal/usecases"
+	"internal/usecases"
 	"encoding/json"
 	"log"
 	"net/http"

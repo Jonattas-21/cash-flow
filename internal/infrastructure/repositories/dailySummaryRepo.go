@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"cash-flow/internal/domain/entities"
+	"internal/domain/entities"
 	"errors"
 	"time"
 

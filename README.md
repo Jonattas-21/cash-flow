@@ -34,3 +34,4 @@ The system has been splitted in five distinguiguished services to manage each sp
 > A Redis Cache service that provide fast report querying.
 
 
+### How to run

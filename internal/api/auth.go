@@ -1,7 +1,7 @@
 package api
 
 import (
-	"cash-flow/pkg/auth"
+	"pkg/auth"
 	"context"
 	"net/http"
 

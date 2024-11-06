@@ -5,12 +5,13 @@ import (
 	"net/http"
 	"os"
 
-	"cash-flow/internal/api"
-	"cash-flow/internal/api/handlers"
-	"cash-flow/internal/domain/entities"
-	"cash-flow/internal/infrastructure/database"
-	"cash-flow/internal/infrastructure/repositories"
-	"cash-flow/internal/usecases"
+	"internal/api/handlers"
+	"internal/domain/entities"
+	"internal/infrastructure/database"
+	"internal/infrastructure/repositories"
+	"internal/usecases"
+
+	"internal/api"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -18,8 +19,7 @@ import (
 )
 
 func main() {
-	//err := godotenv.Load("cmd/cashin-cashout/.env")
-	err := godotenv.Load(".env")
+	err := godotenv.Load("cmd/cashin-cashout/.env")
 	if err != nil {
 		log.Fatal("cashin-cashout: Error loading .env file")
 	}

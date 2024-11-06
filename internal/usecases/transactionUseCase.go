@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	"cash-flow/internal/domain/entities"
-	"cash-flow/internal/domain/interfaces"
+	"internal/domain/entities"
+	"internal/domain/interfaces"
 	"encoding/json"
 	"fmt"
 	"log"

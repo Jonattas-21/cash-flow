@@ -1,12 +1,12 @@
 package main
 
 import (
-	"cash-flow/internal/api"
-	"cash-flow/internal/api/handlers"
-	"cash-flow/internal/domain/entities"
-	"cash-flow/internal/infrastructure/database"
-	"cash-flow/internal/infrastructure/repositories"
-	"cash-flow/internal/usecases"
+	"internal/api"
+	"internal/api/handlers"
+	"internal/domain/entities"
+	"internal/infrastructure/database"
+	"internal/infrastructure/repositories"
+	"internal/usecases"
 
 	"log"
 	"net/http"
