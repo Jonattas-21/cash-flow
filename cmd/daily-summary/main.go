@@ -4,6 +4,7 @@ import (
 	"internal/api"
 	"internal/api/handlers"
 	"internal/domain/entities"
+	"internal/infrastructure/cache"
 	"internal/infrastructure/database"
 	"internal/infrastructure/repositories"
 	"internal/usecases"
@@ -30,7 +31,7 @@ func main() {
 	// Migrate the schema
 	db.AutoMigrate(&entities.DailySummary{})
 
-	rdb := database.NewCache()
+	rdb := cache.NewCache()
 
 	dailySummaryUserCase := usecases.DailySummaryUseCase{
 		Repository:       &repositories.DailySummaryRepository{Db: db},
