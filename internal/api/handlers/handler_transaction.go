@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"encoding/json"
-	"internal/api/dto"
-	"internal/domain/entities"
-	"internal/usecases"
+	"github.com/Jonattas-21/cash-flow/internal/api/dto"
+	"github.com/Jonattas-21/cash-flow/internal/domain/entities"
+	"github.com/Jonattas-21/cash-flow/internal/usecases"
 	"log"
 	"net/http"
 	"time"

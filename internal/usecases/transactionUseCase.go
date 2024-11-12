@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	"internal/domain/entities"
-	"internal/domain/interfaces"
+	"github.com/Jonattas-21/cash-flow/internal/domain/entities"
+	"github.com/Jonattas-21/cash-flow/internal/domain/interfaces"
 	"encoding/json"
 	"fmt"
 	"log"

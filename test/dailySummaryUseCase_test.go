@@ -1,8 +1,8 @@
 package dailySummary
 
 import (
-	"cash-flow/internal/domain/entities"
-	"cash-flow/internal/usecases"
+	"github.com/Jonattas-21/cash-flow/internal/domain/entities"
+	"github.com/Jonattas-21/cash-flow/internal/usecases"
 
 	"encoding/json"
 	"errors"
@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-redis/redis/v8"
+	"github.com/go-redis/redis"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -34,7 +34,9 @@ func (m *MockRedisClient) Get(key string) *redis.StringCmd {
 func TestGetDailySummary(t *testing.T) {
 	// Setup
 	mockRedisClient := new(MockRedisClient)
-	useCase := &usecases.DailySummaryUseCase{Rdb: mockRedisClient}
+	//useCase := &usecases.DailySummaryUseCase{Rdb: mockRedisClient}
+	useCase := &usecases.DailySummaryUseCase{}
+
 
 	testDate := time.Now()
 	cacheKey := fmt.Sprintf("daily_summary:%s", testDate.Format("2006-01-02"))

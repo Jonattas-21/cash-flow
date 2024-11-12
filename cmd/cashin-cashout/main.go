@@ -21,17 +21,17 @@ import (
 	"net/http"
 	"os"
 
-	"docs"
 	"github.com/Jonattas-21/cash-flow/internal/api"
 	"github.com/Jonattas-21/cash-flow/internal/api/handlers"
-	"github.com/Jonattas-21/cash-flow/internal/database"
-	"github.com/Jonattas-21/cash-flow/internal/entities"
-	"github.com/Jonattas-21/cash-flow/internal/repositories"
-	
-	_ "cashin-cashout/docs"
+	"github.com/Jonattas-21/cash-flow/internal/domain/entities"
+	"github.com/Jonattas-21/cash-flow/internal/infrastructure/database"
+	"github.com/Jonattas-21/cash-flow/internal/infrastructure/repositories"
+	"github.com/Jonattas-21/cash-flow/internal/usecases"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	_ "github.com/Jonattas-21/cash-flow/cmd/cashin-cashout/docs"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
 	httpSwagger "github.com/swaggo/http-swagger"

@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"internal/domain/entities"
+	"github.com/Jonattas-21/cash-flow/internal/domain/entities"
 	"time"
 )
 

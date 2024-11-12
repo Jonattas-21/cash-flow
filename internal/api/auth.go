@@ -1,7 +1,7 @@
 package api
 
 import (
-	"pkg/auth"
+	"github.com/Jonattas-21/cash-flow/pkg/auth"
 	"context"
 	"net/http"
 

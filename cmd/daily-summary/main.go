@@ -1,20 +1,20 @@
 package main
 
 import (
-	"internal/api"
-	"internal/api/handlers"
-	"internal/domain/entities"
-	"internal/infrastructure/cache"
-	"internal/infrastructure/database"
-	"internal/infrastructure/repositories"
-	"internal/usecases"
+	"github.com/Jonattas-21/cash-flow/internal/api"
+	"github.com/Jonattas-21/cash-flow/internal/api/handlers"
+	"github.com/Jonattas-21/cash-flow/internal/domain/entities"
+	"github.com/Jonattas-21/cash-flow/internal/infrastructure/cache"
+	"github.com/Jonattas-21/cash-flow/internal/infrastructure/database"
+	"github.com/Jonattas-21/cash-flow/internal/infrastructure/repositories"
+	"github.com/Jonattas-21/cash-flow/internal/usecases"
 
 	"log"
 	"net/http"
 	"os"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
 )
 

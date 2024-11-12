@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"internal/usecases"
+	"github.com/Jonattas-21/cash-flow/internal/usecases"
 	"encoding/json"
 	"log"
 	"net/http"

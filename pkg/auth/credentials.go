@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/coreos/go-oidc"
+	"github.com/coreos/go-oidc/v3/oidc"
 	jwtgo "github.com/dgrijalva/jwt-go"
 )
 
