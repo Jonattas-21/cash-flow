@@ -21,13 +21,13 @@ import (
 	"net/http"
 	"os"
 
+	"docs"
 	"github.com/Jonattas-21/cash-flow/internal/api"
 	"github.com/Jonattas-21/cash-flow/internal/api/handlers"
-	"github.com/Jonattas-21/cash-flow/internal/domain/entities"
-	"github.com/Jonattas-21/cash-flow/internal/infrastructure/database"
-	"github.com/Jonattas-21/cash-flow/internal/infrastructure/repositories"
-	"github.com/Jonattas-21/cash-flow/internal/usecases"
-
+	"github.com/Jonattas-21/cash-flow/internal/database"
+	"github.com/Jonattas-21/cash-flow/internal/entities"
+	"github.com/Jonattas-21/cash-flow/internal/repositories"
+	
 	_ "cashin-cashout/docs"
 
 	"github.com/go-chi/chi"
