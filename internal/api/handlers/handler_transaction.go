@@ -1,10 +1,10 @@
 package handlers
 
 import (
+	"encoding/json"
 	"internal/api/dto"
 	"internal/domain/entities"
 	"internal/usecases"
-	"encoding/json"
 	"log"
 	"net/http"
 	"time"

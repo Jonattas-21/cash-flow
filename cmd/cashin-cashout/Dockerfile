@@ -1,15 +1,19 @@
-# Usando a imagem oficial do Go como base
-FROM golang:1.22-alpine
+# Using official golang image as base image
+FROM golang:1.23.2-alpine
 
-# Criando o diretório de trabalho
+# Creating work directory   
 WORKDIR /app
 
-# Copiando os arquivos do serviço para o diretório de trabalho
+# # Copying go.mod and go.sum files first, then running go mod download 
+# COPY go.mod go.sum ./ 
+# RUN go mod download
+
+# Copying all files from the current directory to the container
 COPY . .
 
-# Baixando as dependências e construindo o binário
+# Downloading dependencies
 RUN go mod tidy
 RUN go build -o cashin-cashout ./cmd/cashin-cashout/main.go
 
-# Comando de inicialização do container
+# Command to run the executable
 CMD ["./cashin-cashout"]

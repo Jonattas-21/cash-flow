@@ -1,0 +1,15 @@
+info:
+  contact: {}
+paths:
+  /:
+    get:
+      description: Check if the service is running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Health Check!
+          schema:
+            type: string
+      summary: Check if the service is running
+swagger: "2.0"
