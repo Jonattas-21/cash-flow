@@ -2,6 +2,16 @@ info:
   contact: {}
 paths:
   /:
+    delete:
+      description: Delete a transaction by id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Delete transaction
     get:
       description: Check if the service is running
       produces:
@@ -12,4 +22,24 @@ paths:
           schema:
             type: string
       summary: Check if the service is running
+    patch:
+      description: Update a transaction by id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Update transaction
+    post:
+      description: Get all transactions by date
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: transaction
+      summary: Get transactions
 swagger: "2.0"

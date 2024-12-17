@@ -1,10 +1,10 @@
 package usecases
 
 import (
-	"github.com/Jonattas-21/cash-flow/internal/domain/entities"
-	"github.com/Jonattas-21/cash-flow/internal/domain/interfaces"
 	"encoding/json"
 	"fmt"
+	"github.com/Jonattas-21/cash-flow/internal/domain/entities"
+	"github.com/Jonattas-21/cash-flow/internal/domain/interfaces"
 	"log"
 	"net/http"
 	"net/url"
@@ -16,6 +16,9 @@ import (
 type Transaction interface {
 	SaveTransaction(transaction entities.Transaction) (entities.Transaction, []string, error)
 	FindTransactions(date time.Time) ([]entities.Transaction, error)
+	FindAllTransactions() ([]entities.Transaction, error)
+	DeleteTransaction(id string) error
+	UpdateTransaction(id string, item entities.Transaction) error
 }
 
 type TransactionUseCase struct {
@@ -26,27 +29,46 @@ func (t *TransactionUseCase) SaveTransaction(transaction entities.Transaction) (
 	errorsValidation := []string{}
 
 	//validations
-	if transaction.Amount == 0 {
-		log.Println("Amount is required")
-		errorsValidation = append(errorsValidation, "Amount is required")
+	if transaction.Amount <= 0 {
+		log.Println(fmt.Println("Amount is required and must be greater than 0, received: ", transaction.Amount))	
+		errorsValidation = append(errorsValidation, "Amount is required and must be greater than 0")
 	}
 
-	if transaction.Type == "" {
-		log.Println("Type is required")
+	if transaction.Type == "" || (transaction.Type != "credit" && transaction.Type != "debit") {
+		log.Println(fmt.Println("Type is required, received:", transaction.Type))
 		errorsValidation = append(errorsValidation, "Transaction type is required and must be credit or debit")
 	}
 
-	transaction.CreatedAt = time.Now().Truncate(24 * time.Hour)
-	transaction.ID = xid.New().String()
-
-	//save database
-	err := t.Repository.Save(transaction)
-	if err != nil {
-		log.Println("Error to save transaction on services: ", err)
-		return transaction, nil, err
+	if transaction.Date == (time.Time{}) || transaction.Date.Before(time.Now().Truncate(24*time.Hour)) {
+		log.Println(fmt.Println("Date is required and must be greater than today, received:", transaction.Date))
+		errorsValidation = append(errorsValidation, "Date is required and must be greater than today")
 	}
 
-	return transaction, errorsValidation, nil
+	if len(errorsValidation) > 0 {
+		return transaction, errorsValidation, nil
+	} else {
+
+		transaction.CreatedAt = time.Now().Truncate(24 * time.Hour)
+		transaction.ID = xid.New().String()
+
+		//save database
+		err := t.Repository.Save(transaction)
+		if err != nil {
+			log.Println("Error to save transaction on services: ", err)
+			return transaction, nil, err
+		}
+
+		return transaction, errorsValidation, nil
+	}
+}
+
+func (t *TransactionUseCase) FindAllTransactions() ([]entities.Transaction, error) {
+	transactions, err := t.Repository.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	return transactions, nil
 }
 
 func (t *TransactionUseCase) FindTransactions(date time.Time) ([]entities.Transaction, error) {
@@ -83,4 +105,20 @@ func (d *TransactionUseCase) GetTransactionsByDate(baseURL string, date string) 
 	}
 
 	return transactions, nil
+}
+
+func (t *TransactionUseCase) DeleteTransaction(id string) error {
+	err := t.Repository.DeleteTransaction(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (t *TransactionUseCase) UpdateTransaction(id string, item entities.Transaction) error {
+	err := t.Repository.UpdateTransaction(id, item)
+	if err != nil {
+		return err
+	}
+	return nil
 }

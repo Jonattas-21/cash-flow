@@ -80,6 +80,8 @@ func main() {
 			r.Use(api.Auth)
 		}
 		r.Post("/create", handler.CreateTransaction)
+		r.Patch("/update/{id}", handler.UpdateTransaction)
+		r.Delete("/delete/{id}", handler.DeleteTransaction)
 		r.Get("/", handler.GetTransactions)
 	})
 

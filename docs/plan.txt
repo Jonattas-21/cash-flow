@@ -1,0 +1,9 @@
+## Todo list
+(ok) Update transaction 
+- Delete transaction
+- Auth with keycloak
+- Generate repot
+- Create 90% tests
+- Docker compose
+- Impress log
+- Documentation swagger

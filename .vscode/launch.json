@@ -10,9 +10,12 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "cmd/cashin-cashout/main.go",
+            "program": "${workspaceFolder}/cmd/cashin-cashout/main.go",
+            //"program": "cmd/cashin-cashout/main.go",
             //"program": "cmd/daily-summary/main.go",
-
+            "cwd": "${workspaceFolder}",
+            "env": {}, 
+            "args": [],
         }
     ]
 

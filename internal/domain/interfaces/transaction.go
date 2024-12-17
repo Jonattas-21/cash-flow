@@ -8,4 +8,7 @@ import (
 type TransactionRepository interface {
 	Save(item entities.Transaction) error
 	FindByDay(date time.Time) ([]entities.Transaction, error)
+	FindAll() ([]entities.Transaction, error)
+	DeleteTransaction(id string) error
+	UpdateTransaction(id string, item entities.Transaction) error
 }

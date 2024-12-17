@@ -1,5 +1,5 @@
 build_cashin:
-	@go build ./cmd/cashin-cashout/.
+	@go build ./cmd/cashin-cashout/main.go
 	@echo cashin-cashout built!
 
 build_summary:

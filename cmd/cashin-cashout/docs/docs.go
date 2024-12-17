@@ -30,6 +30,51 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Get all transactions by date",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get transactions",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "transaction"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a transaction by id",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete transaction",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update a transaction by id",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Update transaction",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         }
     }
