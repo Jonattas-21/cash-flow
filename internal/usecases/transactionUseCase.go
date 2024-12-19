@@ -80,6 +80,7 @@ func (t *TransactionUseCase) FindTransactions(date time.Time) ([]entities.Transa
 	return transactions, nil
 }
 
+//obsolete???
 func (d *TransactionUseCase) GetTransactionsByDate(baseURL string, date string) ([]Transaction, error) {
 	u, err := url.Parse(baseURL)
 	if err != nil {

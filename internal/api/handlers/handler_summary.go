@@ -18,7 +18,7 @@ func (h *HandlerSummary) GetDailySummary(w http.ResponseWriter, r *http.Request)
 
 	dateParam := r.URL.Query().Get("date")
 	if dateParam == "" {
-		http.Error(w, "Missing 'date' query parameter", http.StatusBadRequest)
+		http.Error(w, "Missing 'date' query string parameter", http.StatusBadRequest)
 		return
 	}
 

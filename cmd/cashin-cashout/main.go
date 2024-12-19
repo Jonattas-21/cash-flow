@@ -24,6 +24,7 @@ import (
 	"github.com/Jonattas-21/cash-flow/internal/api"
 	"github.com/Jonattas-21/cash-flow/internal/api/handlers"
 	"github.com/Jonattas-21/cash-flow/internal/domain/entities"
+	"github.com/Jonattas-21/cash-flow/internal/infrastructure/cache"
 	"github.com/Jonattas-21/cash-flow/internal/infrastructure/database"
 	"github.com/Jonattas-21/cash-flow/internal/infrastructure/repositories"
 	"github.com/Jonattas-21/cash-flow/internal/usecases"
@@ -38,7 +39,7 @@ import (
 )
 
 func main() {
-	err := godotenv.Load(".env")
+	err := godotenv.Load("cmd/cashin-cashout/.env")
 	if err != nil {
 		log.Fatal("cashin-cashout: Error loading .env file")
 	}
@@ -67,14 +68,29 @@ func main() {
 		Repository: &repositories.TransactionRepository{Db: db},
 	}
 
+	//Conect to Redis cache
+	rdb := cache.NewCache()
+
+	dailySummaryUserCase := usecases.DailySummaryUseCase{
+		Repository:       &repositories.DailySummaryRepository{Db: db},
+		TransactionUseCase: &transactionUserCase,
+		CashinCashoutUrl: "",
+		Rdb:              rdb,
+	}
+
 	handler := handlers.HandlerTransaction{
 		TransactionUseCase: &transactionUserCase,
 	}
 
+	handlerSummary := handlers.HandlerSummary{
+		DailySummaryUseCase: &dailySummaryUserCase,
+	}
+
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-
 	r.Get("/", handlers.HealthCheck)
+
+	//Transaction routes
 	r.Route("/transactions", func(r chi.Router) {
 		if useAuth == "true" {
 			r.Use(api.Auth)
@@ -83,6 +99,14 @@ func main() {
 		r.Patch("/update/{id}", handler.UpdateTransaction)
 		r.Delete("/delete/{id}", handler.DeleteTransaction)
 		r.Get("/", handler.GetTransactions)
+	})
+
+	//Daily Summary routes
+	r.Route("/report", func(r chi.Router) {
+		if useAuth == "true" {
+			r.Use(api.Auth)
+		}
+		r.Get("/getDailyReport", handlerSummary.GetDailySummary)
 	})
 
 	// Serve the Swagger UI

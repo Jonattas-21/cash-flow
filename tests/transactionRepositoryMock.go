@@ -21,16 +21,16 @@ func (r *TransactionRepositoryMock) FindAll() ([]entities.Transaction, error) {
 }
 
 func (r *TransactionRepositoryMock) FindByDay(date time.Time) ([]entities.Transaction, error){
-	args := r.Called(date)
+	args := r.Called()
 	return args.Get(0).([]entities.Transaction), args.Error(1)
 }
 
 func (r *TransactionRepositoryMock) DeleteTransaction(id string) error {
-	args := r.Called(id)
+	args := r.Called()
 	return args.Error(0)
 }
 
 func (r *TransactionRepositoryMock) UpdateTransaction(id string, transaction entities.Transaction) error {
-	args := r.Called(id, transaction)
+	args := r.Called()
 	return args.Error(0)
 }

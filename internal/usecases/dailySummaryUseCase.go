@@ -1,65 +1,71 @@
 package usecases
 
 import (
-	"github.com/Jonattas-21/cash-flow/internal/domain/entities"
-	"github.com/Jonattas-21/cash-flow/internal/domain/interfaces"
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
-	"net/url"
 	"time"
+
+	"github.com/Jonattas-21/cash-flow/internal/domain/entities"
+	"github.com/Jonattas-21/cash-flow/internal/domain/interfaces"
 
 	"github.com/go-redis/redis"
 )
 
-// todo rever se precisa de 2
+// todo: look over if it's necessary to have both methods to search
 type DailySummary interface {
 	GetDailySummary(date time.Time) (*entities.DailySummary, error)
 	GenerateReport(date time.Time) (*entities.DailySummary, error)
-	getTransactionsByDate(date string) ([]entities.Transaction, error) //tem q ser DTO TODO
 }
 
 type DailySummaryUseCase struct {
-	Repository       interfaces.DailySummaryRepository
-	CashinCashoutUrl string
-	Rdb              *redis.Client //retirar o redis daqui
+	Repository         interfaces.DailySummaryRepository
+	TransactionUseCase Transaction
+	CashinCashoutUrl   string
+	Rdb                *redis.Client //retirar o redis daqui
 }
 
 func (d *DailySummaryUseCase) GetDailySummary(date time.Time) (*entities.DailySummary, error) {
-
 	cacheKey := fmt.Sprintf("daily_summary:%s", date.Format("2006-01-02"))
-	val, err := d.Rdb.Get(cacheKey).Result()
+
+	_, err := d.Rdb.Ping().Result()
 	var summary *entities.DailySummary
 
-	if err == redis.Nil {
-		// Is not int hte cache, lets find in the DB
-		summary, err = d.Repository.GetReport(date)
-		if err != nil {
-			return nil, err
-		}
-
-		if summary == nil {
-			// if not found in db, lets generate the report
-			summary, err = d.GenerateReport(date)
+	// if the redis is up, let's try to get the data from cache
+	if err == nil {
+		val, err := d.Rdb.Get(cacheKey).Result()
+		if err == redis.Nil {
+			// Is not in the cache, lets find it in the DB
+			err = json.Unmarshal([]byte(val), &summary)
 			if err != nil {
 				return nil, err
 			}
+
+			return summary, nil
 		}
-	} else if err != nil {
+	} else {
+		log.Println("Error to retrieve data from cache or reach the redis: ", err)
+	}
+
+	// if it's not in the cache or error in cache, let's find in the db
+	summary, err = d.Repository.GetReport(date)
+	if err != nil {
 		return nil, err
 	}
 
-	err = json.Unmarshal([]byte(val), &summary)
-	if err != nil {
-		return nil, err
+	if summary == nil {
+		// if it not find in db, let's generate the report
+		summary, err = d.GenerateReport(date)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return summary, nil
 }
 
 func (d *DailySummaryUseCase) GenerateReport(date time.Time) (*entities.DailySummary, error) {
-	transactions, err := d.getTransactionsByDate(date.Format("2006-01-02"))
+	transactions, err := d.TransactionUseCase.FindTransactions(date)
 
 	if err != nil {
 		log.Println("Error to get transactions by date: ", err)
@@ -96,31 +102,4 @@ func (d *DailySummaryUseCase) GenerateReport(date time.Time) (*entities.DailySum
 	}
 
 	return &dailySymmary, nil
-}
-
-func (d *DailySummaryUseCase) getTransactionsByDate(date string) ([]entities.Transaction, error) {
-	u, err := url.Parse(d.CashinCashoutUrl)
-	if err != nil {
-		return nil, err
-	}
-
-	u.Path = "/transactions"
-	q := u.Query()
-	q.Set("date", date)
-	u.RawQuery = q.Encode()
-
-	resp, err := http.Get(u.String())
-	if err != nil {
-		return nil, err
-	}
-
-	defer resp.Body.Close()
-
-	var transactions []entities.Transaction
-	err = json.NewDecoder(resp.Body).Decode(&transactions)
-	if err != nil {
-		return nil, err
-	}
-
-	return transactions, nil
 }

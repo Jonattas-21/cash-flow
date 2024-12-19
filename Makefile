@@ -1,22 +1,10 @@
-build_cashin:
-	@go build ./cmd/cashin-cashout/main.go
-	@echo cashin-cashout built!
-
-build_summary:
-	@go build ./cmd/daily-summary/.
-	@echo daily-summary built!
-
 build:
 	@go build ./cmd/cashin-cashout/.
-	@go build ./cmd/daily-summary/.
 	@echo all services built!
 
-run_cashin: build_cashin
+run: build
 	@go run ./cmd/cashin-cashout/main.go
-
-run_summary: build_summary
-	@go run ./cmd/daily-summary/main.go
-
+	@echo services is running!
 test:
 	@echo "Testing..."
 	go test -v ./...

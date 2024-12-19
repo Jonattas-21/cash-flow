@@ -2,8 +2,12 @@
 (ok) Update transaction 
 (ok) Delete transaction
 - Auth with keycloak
-- Generate repot
+- (in progress) Generate repot
 - Create 90% tests
+	- (ok) Transaction services
+	- Daily report services
+	- Repository
+	- Handlers
 - Docker compose
 - Impress log
 - Documentation swagger
