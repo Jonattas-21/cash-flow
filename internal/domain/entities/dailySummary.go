@@ -10,4 +10,5 @@ type DailySummary struct {
 	Debit  int       `json:"debit"`
 	Total  int       `json:"total"`
 	Status string    `json:"status" gorm:"size:50"`
+	CreatedAt time.Time `json:"CreatedAt"`
 }

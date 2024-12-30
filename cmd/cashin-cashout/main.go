@@ -62,7 +62,7 @@ func main() {
 
 	//Conect and migrate the schema
 	db := database.NewDB()
-	db.AutoMigrate(&entities.Transaction{})
+	db.AutoMigrate(&entities.Transaction{}, &entities.DailySummary{})
 
 	transactionUserCase := usecases.TransactionUseCase{
 		Repository: &repositories.TransactionRepository{Db: db},

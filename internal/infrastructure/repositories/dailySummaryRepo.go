@@ -15,8 +15,8 @@ type DailySummaryRepository struct {
 func (d *DailySummaryRepository) GetReport(date time.Time) (*entities.DailySummary, error) {
 	var summary entities.DailySummary
 
-	dateFormmatedmin := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.Local)
-	dateFormmatedMax := time.Date(date.Year(), date.Month(), date.Day(), 23, 59, 59, 0, time.Local)
+	dateFormmatedmin := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
+	dateFormmatedMax := time.Date(date.Year(), date.Month(), date.Day(), 23, 59, 59, 0, time.UTC)
 
 	tx := d.Db.Where("date BETWEEN ? and ?", dateFormmatedmin, dateFormmatedMax).First(&summary)
 
@@ -27,5 +27,13 @@ func (d *DailySummaryRepository) GetReport(date time.Time) (*entities.DailySumma
 }
 
 func (d *DailySummaryRepository) SaveReport(item entities.DailySummary) error {
+	item.CreatedAt = time.Now()
 	return d.Db.Create(item).Error
+}
+
+func (d *DailySummaryRepository) DeleteReport(date time.Time) error {
+	dateFormmatedmin := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
+	dateFormmatedMax := time.Date(date.Year(), date.Month(), date.Day(), 23, 59, 59, 0, time.UTC)
+
+	return d.Db.Where("date BETWEEN ? and ?", dateFormmatedmin, dateFormmatedMax).Delete(&entities.DailySummary{}).Error
 }

@@ -39,16 +39,16 @@ func (t *TransactionUseCase) SaveTransaction(transaction entities.Transaction) (
 		errorsValidation = append(errorsValidation, "Transaction type is required and must be credit or debit")
 	}
 
-	if transaction.Date == (time.Time{}) || transaction.Date.Before(time.Now().Truncate(24*time.Hour)) {
-		log.Println(fmt.Println("Date is required and must be greater than today, received:", transaction.Date))
-		errorsValidation = append(errorsValidation, "Date is required and must be greater than today")
+	if transaction.Date == (time.Time{}) || !transaction.Date.Before(time.Now().Truncate(24*time.Hour).AddDate(0, 0, 1)) {
+		log.Println(fmt.Println("Date is required and must be less or equal than today, received:", transaction.Date))
+		errorsValidation = append(errorsValidation, "Date is required and must be less or equal than today")
 	}
 
 	if len(errorsValidation) > 0 {
 		return transaction, errorsValidation, nil
 	} else {
 
-		transaction.CreatedAt = time.Now().Truncate(24 * time.Hour)
+		transaction.CreatedAt = time.Now()
 		transaction.ID = xid.New().String()
 
 		//save database

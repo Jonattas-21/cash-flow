@@ -47,20 +47,35 @@ func (d *DailySummaryUseCase) GetDailySummary(date time.Time) (*entities.DailySu
 		log.Println("Error to retrieve data from cache or reach the redis: ", err)
 	}
 
+	//It's today, let's delete the partial report
+	today := time.Now()
+	if date.Day() == today.Day() && date.Month() == today.Month() && date.Year() == today.Year() {
+		err = d.Repository.DeleteReport(date)
+		if err != nil {
+			log.Println("Error to delete the report: ", err)
+			return nil, err
+		}
+	}
+
 	// if it's not in the cache or error in cache, let's find in the db
+	log.Println("Not found in cache, let's find in the db with the date: ", date)
 	summary, err = d.Repository.GetReport(date)
 	if err != nil {
 		return nil, err
 	}
 
+	log.Println("Found summary: ", summary)
+
 	if summary == nil {
 		// if it not find in db, let's generate the report
+		log.Println("Not found in db, let's generate the report for the date: ", date)
 		summary, err = d.GenerateReport(date)
 		if err != nil {
 			return nil, err
 		}
 	}
 
+	log.Println("Summary: ", summary)
 	return summary, nil
 }
 
@@ -74,6 +89,7 @@ func (d *DailySummaryUseCase) GenerateReport(date time.Time) (*entities.DailySum
 
 	var dailySymmary entities.DailySummary
 	dailySymmary.Date = date
+	dailySymmary.CreatedAt = time.Now()
 	for _, t := range transactions {
 
 		if t.Type == "credit" {

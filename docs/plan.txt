@@ -1,4 +1,10 @@
-## Todo list
+---> Business rules
+
+Save a trasnsaction: value is required and greater then zero, there are two types credit and debit.
+Report: If it's a date before current day, the report it's generated as closed report or partial report.
+
+---> Todo list
+
 (ok) Update transaction 
 (ok) Delete transaction
 - Auth with keycloak
