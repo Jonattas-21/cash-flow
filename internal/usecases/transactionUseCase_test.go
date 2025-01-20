@@ -71,7 +71,7 @@ func Test_SaveTransactions_ValidationsError_date(t *testing.T) {
 	newTransactionDto.Date = time.Time{}
 	_, validations, err := userCase.SaveTransaction(*newTransactionDto)
 
-	assert.Equal("Date is required and must be greater than today", validations[0])
+	assert.Equal("Date is required and must be less or equal than today", validations[0])
 	assert.Nil(err)
 }
 
@@ -149,4 +149,3 @@ func Test_UpdateTransaction_error(t *testing.T) {
 
 	assert.NotNil(err)
 }
-

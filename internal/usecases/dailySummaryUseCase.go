@@ -38,6 +38,7 @@ func (d *DailySummaryUseCase) GetDailySummary(date time.Time) (*entities.DailySu
 			// Is not in the cache, lets find it in the DB
 			err = json.Unmarshal([]byte(val), &summary)
 			if err != nil {
+				log.Println("Error to unmarshal the data from cache: ", err)
 				return nil, err
 			}
 
@@ -66,7 +67,7 @@ func (d *DailySummaryUseCase) GetDailySummary(date time.Time) (*entities.DailySu
 
 	log.Println("Found summary: ", summary)
 
-	if summary == nil {
+	if summary == nil || summary.Total == 0 {
 		// if it not find in db, let's generate the report
 		log.Println("Not found in db, let's generate the report for the date: ", date)
 		summary, err = d.GenerateReport(date)

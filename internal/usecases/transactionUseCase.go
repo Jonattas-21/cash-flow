@@ -1,13 +1,10 @@
 package usecases
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/Jonattas-21/cash-flow/internal/domain/entities"
 	"github.com/Jonattas-21/cash-flow/internal/domain/interfaces"
 	"log"
-	"net/http"
-	"net/url"
 	"time"
 
 	"github.com/rs/xid"
@@ -81,32 +78,32 @@ func (t *TransactionUseCase) FindTransactions(date time.Time) ([]entities.Transa
 }
 
 //obsolete???
-func (d *TransactionUseCase) GetTransactionsByDate(baseURL string, date string) ([]Transaction, error) {
-	u, err := url.Parse(baseURL)
-	if err != nil {
-		return nil, err
-	}
-	q := u.Query()
-	q.Set("date", date)
-	u.RawQuery = q.Encode()
+// func (d *TransactionUseCase) GetTransactionsByDate(baseURL string, date string) ([]Transaction, error) {
+// 	u, err := url.Parse(baseURL)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	q := u.Query()
+// 	q.Set("date", date)
+// 	u.RawQuery = q.Encode()
 
-	resp, err := http.Get(u.String())
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
+// 	resp, err := http.Get(u.String())
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
-	}
+// 	if resp.StatusCode != http.StatusOK {
+// 		return nil, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
+// 	}
 
-	var transactions []Transaction
-	if err := json.NewDecoder(resp.Body).Decode(&transactions); err != nil {
-		return nil, err
-	}
+// 	var transactions []Transaction
+// 	if err := json.NewDecoder(resp.Body).Decode(&transactions); err != nil {
+// 		return nil, err
+// 	}
 
-	return transactions, nil
-}
+// 	return transactions, nil
+// }
 
 func (t *TransactionUseCase) DeleteTransaction(id string) error {
 	err := t.Repository.DeleteTransaction(id)
