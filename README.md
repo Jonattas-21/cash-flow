@@ -5,12 +5,12 @@ The main goal of this project it's to provide a cash flow system manager, it's s
 ### Activity Diagram
 Bellow folow two use cases that illustrate what it's possible to operate in the system.
 
-![alt text](https://raw.githubusercontent.com/Jonattas-21/cash-flow/refs/heads/main/docs/activity_diagram.png?token=GHSAT0AAAAAACZG4K57EVZCLOXWR4MVPOUGZZJPYSQ "USe Case")
+![alt text](https://raw.githubusercontent.com/Jonattas-21/cash-flow/refs/heads/main/docs/activity_diagram.png "USe Case")
 
 ### Container Diagram
 The system has been splitted in five distinguiguished services to manage each specific responsability.
 
-![alt text](https://raw.githubusercontent.com/Jonattas-21/cash-flow/refs/heads/main/docs/container_diagram.png?token=GHSAT0AAAAAACZG4K563PXN2T46OR6EEXJEZZJP2VA "Container Diagram")
+![alt text](https://raw.githubusercontent.com/Jonattas-21/cash-flow/refs/heads/main/docs/container_diagram.png "Container Diagram")
 
 
 #### Transaction-service
