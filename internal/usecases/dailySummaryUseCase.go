@@ -14,8 +14,8 @@ import (
 
 // todo: look over if it's necessary to have both methods to search
 type DailySummary interface {
-	GetDailySummary(date time.Time) (*entities.DailySummary, error)
-	GenerateReport(date time.Time) (*entities.DailySummary, error)
+	GetDailySummary(date time.Time) (entities.DailySummary, error)
+	GenerateReport(date time.Time) (entities.DailySummary, error)
 }
 
 type DailySummaryUseCase struct {
@@ -25,23 +25,26 @@ type DailySummaryUseCase struct {
 	Rdb                *redis.Client //retirar o redis daqui
 }
 
-func (d *DailySummaryUseCase) GetDailySummary(date time.Time) (*entities.DailySummary, error) {
-	cacheKey := fmt.Sprintf("daily_summary:%s", date.Format("2006-01-02"))
+func (d *DailySummaryUseCase) GetDailySummary(date time.Time) (entities.DailySummary, error) {
+	cacheKey := fmt.Sprintf("daily_summary_%s", date.Format("2006-01-02"))
 
 	_, err := d.Rdb.Ping().Result()
-	var summary *entities.DailySummary
+	var summary entities.DailySummary
 
 	// if the redis is up, let's try to get the data from cache
 	if err == nil {
+		log.Println("Trying to get data from cache with the key: ", cacheKey)
 		val, err := d.Rdb.Get(cacheKey).Result()
-		if err == redis.Nil {
+		log.Println("Value from cache: ", val)
+		if err == nil && val != "" {
 			// Is not in the cache, lets find it in the DB
 			err = json.Unmarshal([]byte(val), &summary)
 			if err != nil {
 				log.Println("Error to unmarshal the data from cache: ", err)
-				return nil, err
+				return summary, err
 			}
 
+			log.Println("Found in cache for date: ", date)
 			return summary, nil
 		}
 	} else {
@@ -54,7 +57,7 @@ func (d *DailySummaryUseCase) GetDailySummary(date time.Time) (*entities.DailySu
 		err = d.Repository.DeleteReport(date)
 		if err != nil {
 			log.Println("Error to delete the report: ", err)
-			return nil, err
+			return summary, err
 		}
 	}
 
@@ -62,33 +65,37 @@ func (d *DailySummaryUseCase) GetDailySummary(date time.Time) (*entities.DailySu
 	log.Println("Not found in cache, let's find in the db with the date: ", date)
 	summary, err = d.Repository.GetReport(date)
 	if err != nil {
-		return nil, err
+		return summary, err
 	}
 
-	log.Println("Found summary: ", summary)
-
-	if summary == nil || summary.Total == 0 {
+	if summary.Total == 0 {
 		// if it not find in db, let's generate the report
 		log.Println("Not found in db, let's generate the report for the date: ", date)
 		summary, err = d.GenerateReport(date)
 		if err != nil {
-			return nil, err
+			return summary, err
 		}
+	}
+	jsonSummary, _ := json.Marshal(summary)
+	redisCommand := d.Rdb.Set(cacheKey, jsonSummary, time.Duration(2) * time.Minute)
+	if redisCommand.Err() != nil {
+		log.Println("Error to save the data in cache: ", redisCommand.Err())
 	}
 
 	log.Println("Summary: ", summary)
 	return summary, nil
 }
 
-func (d *DailySummaryUseCase) GenerateReport(date time.Time) (*entities.DailySummary, error) {
+func (d *DailySummaryUseCase) GenerateReport(date time.Time) (entities.DailySummary, error) {
 	transactions, err := d.TransactionUseCase.FindTransactions(date)
+	var dailySymmary entities.DailySummary
 
 	if err != nil {
 		log.Println("Error to get transactions by date: ", err)
-		return nil, err
+		return dailySymmary, err
 	}
 
-	var dailySymmary entities.DailySummary
+	
 	dailySymmary.Date = date
 	dailySymmary.CreatedAt = time.Now()
 	for _, t := range transactions {
@@ -115,8 +122,8 @@ func (d *DailySummaryUseCase) GenerateReport(date time.Time) (*entities.DailySum
 	// save in db
 	err = d.Repository.SaveReport(dailySymmary)
 	if err != nil {
-		return nil, err
+		return dailySymmary, err
 	}
 
-	return &dailySymmary, nil
+	return dailySymmary, nil
 }

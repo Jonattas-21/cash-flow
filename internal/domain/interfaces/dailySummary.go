@@ -7,6 +7,6 @@ import (
 
 type DailySummaryRepository interface {
 	SaveReport(item entities.DailySummary) error
-	GetReport(date time.Time) (*entities.DailySummary, error)
+	GetReport(date time.Time) (entities.DailySummary, error)
 	DeleteReport(date time.Time) error
 }

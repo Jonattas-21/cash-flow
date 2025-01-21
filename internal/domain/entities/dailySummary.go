@@ -5,7 +5,7 @@ import (
 )
 
 type DailySummary struct {
-	Date   time.Time `json:"date"`
+	Date   time.Time `json:"date" gorm:"primaryKey"`
 	Credit int       `json:"credit"`
 	Debit  int       `json:"debit"`
 	Total  int       `json:"total"`

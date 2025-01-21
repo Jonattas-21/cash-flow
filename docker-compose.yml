@@ -1,23 +1,13 @@
 version: '3.8'
 
-name: cash-flow
 services:
   cashin-cashout:
-    build: ./cmd/cashin-cashout/
+    build: .
     ports:
       - "8088:8088"
     depends_on:
       - db
       - keycloak
-
-  # daily-summary:
-  #   build: ./cmd/daily-summary/
-  #   ports:
-  #     - "8089:8089"
-  #   depends_on:
-  #     - db
-  #     - redis
-  #     - keycloak
 
   db:
     image: postgres:latest

@@ -15,9 +15,9 @@ func (d* DailySummaryRepositoryMock) SaveReport(item entities.DailySummary) erro
 	return args.Error(0)
 }
 
-func (d* DailySummaryRepositoryMock) GetReport(date time.Time) (*entities.DailySummary, error) {
+func (d* DailySummaryRepositoryMock) GetReport(date time.Time) (entities.DailySummary, error) {
 	args := d.Called(date)
-	return args.Get(0).(*entities.DailySummary), args.Error(1)
+	return args.Get(0).(entities.DailySummary), args.Error(1)
 }
 
 func (d* DailySummaryRepositoryMock) DeleteReport(date time.Time) error {
