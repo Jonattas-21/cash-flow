@@ -35,5 +35,4 @@ The system has been splitted in five distinguiguished services to manage each sp
 
 
 ### How to run
-> Install make
-make run
+> Install make-> make run
